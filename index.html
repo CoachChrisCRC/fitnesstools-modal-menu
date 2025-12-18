@@ -10,1505 +10,406 @@
         /* Import custom fonts */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Oswald:wght@400;500;700&display=swap');
         
+        :root {
+            --bg-page: #f3f4f6;
+            --bg-card: #ffffff;
+            --border-color: #e5e7eb;
+            --text-main: #1f2937;
+            --text-heading: #000000;
+            --text-muted: #9ca3af;
+            --text-accent: #6b7280;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            --bg-toggle: #f3f4f6;
+            --toggle-pill-bg: #e5e7eb;
+            --bg-btn-primary: #000000;
+            --btn-text-primary: #ffffff;
+            --link-hover-bg: #000000;
+            --link-hover-text: #ffffff;
+            --modal-overlay: rgba(0, 0, 0, 0.4);
+        }
+
+        [data-theme="dark"] {
+            --bg-page: #0a0a0a;
+            --bg-card: #121212;
+            --border-color: #262626;
+            --text-main: #ffffff;
+            --text-heading: #ffffff;
+            --text-muted: #525252;
+            --text-accent: #a3a3a3;
+            --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            --bg-toggle: #1a1a1a;
+            --toggle-pill-bg: #1a1a1a;
+            --bg-btn-primary: #ffffff;
+            --btn-text-primary: #000000;
+            --link-hover-bg: #ffffff;
+            --link-hover-text: #000000;
+            --modal-overlay: rgba(0, 0, 0, 0.8);
+        }
+
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #000000;
-            color: #ffffff;
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        .font-brand {
-            font-family: 'Oswald', sans-serif;
+        .font-brand { font-family: 'Oswald', sans-serif; }
+
+        .app-card {
+            background-color: var(--bg-card);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
         }
 
-        /* Nav Card Hover Effects */
         .link-card {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
             cursor: pointer;
+            user-select: none;
         }
         
         .link-card:hover {
             transform: translateY(-2px);
-            background-color: #ffffff;
-            color: #000000;
+            background-color: var(--link-hover-bg);
+            color: var(--link-hover-text);
+            border-color: var(--link-hover-bg);
         }
 
-        .link-card:hover .arrow-icon {
-            transform: translateX(4px);
+        .link-card:hover .arrow-icon { transform: translateX(4px); }
+
+        .newsletter-cta {
+            background-color: var(--bg-btn-primary);
+            color: var(--btn-text-primary);
+            transition: all 0.25s ease;
+            cursor: pointer;
+            user-select: none;
         }
 
-        .link-card:active {
-            transform: translateY(0);
+        /* Theme Toggle Styling */
+        .theme-switch-container {
+            position: relative;
+            width: 44px;
+            height: 22px;
+            background-color: var(--toggle-pill-bg);
+            border-radius: 100px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            padding: 2px;
+            border: 1px solid var(--border-color);
         }
 
-        /* Generic Modal Styles */
-        .tool-modal {
-            transition: opacity 0.3s ease;
+        .theme-switch-circle {
+            position: absolute;
+            left: 2px;
+            width: 16px;
+            height: 16px;
+            background-color: var(--bg-btn-primary);
+            border-radius: 50%;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 10;
+        }
+
+        [data-theme="dark"] .theme-switch-circle { transform: translateX(22px); }
+
+        .theme-switch-icons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 0 3px;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .theme-switch-icons i { width: 9px; height: 9px; color: var(--text-muted); }
+        [data-theme="light"] .icon-sun { color: var(--btn-text-primary); }
+        [data-theme="dark"] .icon-moon { color: var(--btn-text-primary); }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
             z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            background-color: var(--modal-overlay);
+            backdrop-filter: blur(4px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
         }
-        
-        .modal-open {
+
+        .modal-overlay.active {
             opacity: 1;
             pointer-events: auto;
         }
         
-        .modal-closed {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        /* Specific Styles for Timer (Monochromatic Inversion for State Changes) */
-        .state-work {
-            background-color: #ffffff !important;
-            color: #000000 !important;
-        }
-
-        .state-rest {
-            background-color: #000000 !important;
-            color: #ffffff !important;
+        .modal-content {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            transform: scale(0.95);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            width: 100%;
+            max-width: 24rem;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            position: relative;
         }
         
-        .state-set-rest {
-            background-color: #333333 !important;
-            color: #fefefe !important;
-        }
-
-        /* Input styling for the dark theme */
-        input, select {
-            background-color: #111111;
-            border: 1px solid #333333;
-            color: #ffffff;
-            padding: 0.75rem;
-            border-radius: 0.25rem;
-            transition: border-color 0.2s;
-        }
-
-        input:focus, select:focus {
-            outline: none;
-            border-color: #ffffff;
-        }
+        .modal-overlay.active .modal-content { transform: scale(1); }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center relative">
+<body class="min-h-screen flex flex-col items-center justify-center p-4" data-theme="light">
 
-    <!-- Header / Branding Area -->
-    <header class="w-full max-w-md px-6 py-8 flex justify-between items-start">
-        <div class="flex flex-col select-none">
-            <h1 class="font-brand font-bold text-4xl leading-none tracking-wide text-white mb-1">COACH CHRIS</h1>
-            <h2 class="font-brand font-bold text-lg leading-none text-gray-400 mb-[2px]">CIRCULAR ROOTS COACHING</h2>
-            <h3 class="font-brand font-bold text-lg leading-none text-gray-600">TRAIN UNCNVNTNL</h3>
-        </div>
-        
-        <button class="text-white hover:text-gray-300 transition-colors pt-1" aria-label="Menu">
-            <i data-lucide="menu" class="w-8 h-8"></i>
-        </button>
-    </header>
-
-    <!-- Main Content -->
-    <main class="w-full max-w-md px-6 flex-grow pb-12">
-        
-        <!-- Profile/Intro Section -->
-        <div class="text-center mb-10 mt-4">
-            <div class="inline-block p-1 border-2 border-white rounded-full mb-4">
-                <div class="w-24 h-24 bg-gray-900 rounded-full flex items-center justify-center overflow-hidden">
-                    <i data-lucide="dumbbell" class="w-10 h-10 text-white"></i>
+    <!-- Combined Help/Information Modal -->
+    <div id="modal-overlay" class="modal-overlay">
+        <div class="modal-content shadow-2xl">
+            <button id="close-modal" class="absolute top-4 right-4 p-2 rounded-full hover:opacity-70 transition-opacity" style="color: var(--text-muted)">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div class="flex flex-col items-center text-center">
+                <div class="p-4 rounded-2xl mb-4" style="background-color: var(--bg-toggle)">
+                    <i data-lucide="help-circle" class="w-8 h-8" style="color: var(--text-heading)"></i>
                 </div>
+                <h3 class="font-brand font-bold text-2xl uppercase mb-3" style="color: var(--text-heading)">Toolkit Guide</h3>
+                <div class="space-y-4 text-sm leading-relaxed text-left" style="color: var(--text-accent)">
+                    <p>Welcome to the <strong>Circular Roots</strong> toolkit. Here’s how to get the most out of these resources:</p>
+                    <ul class="space-y-3 list-none">
+                        <li class="flex gap-2">
+                            <i data-lucide="check-circle" class="w-4 h-4 mt-0.5 flex-shrink-0" style="color: var(--text-heading)"></i>
+                            <span>Select any tool from the menu to start your calculation or generate training sessions.</span>
+                        </li>
+                        <li class="flex gap-2">
+                            <i data-lucide="check-circle" class="w-4 h-4 mt-0.5 flex-shrink-0" style="color: var(--text-heading)"></i>
+                            <span>Toggle between <strong>Light</strong> and <strong>Dark</strong> modes using the switch above for your preference.</span>
+                        </li>
+                        <li class="flex gap-2">
+                            <i data-lucide="check-circle" class="w-4 h-4 mt-0.5 flex-shrink-0" style="color: var(--text-heading)"></i>
+                            <span>All data is processed locally—your fitness stats stay private to your device and are never shared.</span>
+                        </li>
+                        <li class="flex gap-2">
+                            <i data-lucide="check-circle" class="w-4 h-4 mt-0.5 flex-shrink-0" style="color: var(--text-heading)"></i>
+                            <span>These tools are optimized for mobile, tablet, and desktop viewports.</span>
+                        </li>
+                    </ul>
+                </div>
+                <button id="modal-confirm" class="w-full mt-8 py-3 font-black uppercase tracking-widest rounded-xl text-xs" style="background-color: var(--bg-btn-primary); color: var(--btn-text-primary)">Start Training</button>
             </div>
-            <h2 class="text-2xl font-bold mb-2">Free Fitness Tools</h2>
-            <p class="text-gray-400 text-sm max-w-xs mx-auto">
-                No-nonsense tools to optimize your training. 
-                <br>Calculate, track, and execute.
-            </p>
         </div>
+    </div>
 
-        <!-- Links Container -->
-        <div class="space-y-4 flex flex-col w-full">
+    <!-- Dynamic Developer Modal -->
+    <div id="dev-modal-overlay" class="modal-overlay">
+        <div class="modal-content shadow-2xl">
+            <button id="close-dev-modal" class="absolute top-4 right-4 p-2 rounded-full hover:opacity-70 transition-opacity" style="color: var(--text-muted)">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div class="flex flex-col items-center text-center">
+                <div class="p-4 rounded-2xl mb-4" style="background-color: var(--bg-toggle)">
+                    <div id="dev-icon-wrapper">
+                        <i id="dev-icon" data-lucide="construction" class="w-8 h-8" style="color: var(--text-heading)"></i>
+                    </div>
+                </div>
+                <h3 id="dev-title" class="font-brand font-bold text-2xl uppercase mb-3" style="color: var(--text-heading)">In the Lab</h3>
+                <p id="dev-text" class="text-sm leading-relaxed mb-6" style="color: var(--text-accent)">
+                    Fine-tuning the algorithms to ensure peak performance. Live soon.
+                </p>
+                <button id="dev-modal-confirm" class="w-full py-3 font-black uppercase tracking-widest rounded-xl text-xs" style="background-color: var(--bg-btn-primary); color: var(--btn-text-primary)">Back to Menu</button>
+            </div>
+        </div>
+    </div>
 
-            <!-- Link 1: WOD Generator -->
-            <button onclick="openModal('wod')" class="link-card block w-full border border-white p-4 rounded-lg group text-left">
-                <div class="flex items-center justify-between">
+    <!-- Main Application Card -->
+    <div class="app-card w-full max-w-md rounded-3xl overflow-hidden flex flex-col items-center">
+        
+        <header class="w-full px-8 py-10 flex justify-between items-start">
+            <div class="flex flex-col select-none">
+                <h1 class="font-brand font-bold text-4xl leading-none tracking-wide mb-1" style="color: var(--text-heading)">COACH CHRIS</h1>
+                <h2 class="font-brand font-bold text-lg leading-none mb-[2px]" style="color: var(--text-accent)">CIRCULAR ROOTS COACHING</h2>
+                <h3 class="font-brand font-bold text-lg leading-none uppercase" style="color: var(--text-muted)">Train Uncnvntnl</h3>
+            </div>
+            
+            <div class="flex flex-col items-center gap-3">
+                <div class="flex flex-col items-center gap-1.5">
+                    <span class="text-[9px] font-black uppercase tracking-widest opacity-60" style="color: var(--text-muted)">Theme</span>
+                    <div id="theme-toggle" class="theme-switch-container" title="Toggle Light/Dark">
+                        <div class="theme-switch-circle"></div>
+                        <div class="theme-switch-icons">
+                            <i data-lucide="sun" class="icon-sun"></i>
+                            <i data-lucide="moon" class="icon-moon"></i>
+                        </div>
+                    </div>
+                </div>
+                <button id="open-info" class="p-2.5 rounded-xl transition-all duration-300 hover:scale-105 active:scale-95 flex items-center justify-center" style="background-color: var(--bg-toggle); color: var(--text-heading)" title="How to use">
+                    <i data-lucide="help-circle" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </header>
+
+        <main class="w-full px-8 flex-grow pb-12">
+            <div class="text-center mb-10 mt-2">
+                <div class="inline-block p-1 rounded-full mb-4 shadow-sm" style="background-color: var(--bg-toggle); border: 1px solid var(--border-color)">
+                    <div class="w-24 h-24 rounded-full flex items-center justify-center overflow-hidden" style="background-color: var(--bg-btn-primary)">
+                        <i data-lucide="dumbbell" class="w-10 h-10" style="color: var(--btn-text-primary)"></i>
+                    </div>
+                </div>
+                <h2 class="text-2xl font-black mb-2" style="color: var(--text-heading)">Free Fitness Tools</h2>
+                <p class="text-sm max-w-[250px] mx-auto leading-relaxed" style="color: var(--text-accent)">
+                    No-nonsense tools to optimize your training. 
+                    Calculate, track, and execute.
+                </p>
+            </div>
+
+            <div class="space-y-3 flex flex-col w-full">
+                <div data-tool="wod" class="link-card tool-btn p-4 rounded-xl flex items-center justify-between">
                     <div class="flex items-center space-x-4">
                         <i data-lucide="zap" class="w-5 h-5"></i>
-                        <span class="font-bold text-lg uppercase tracking-wide">WOD Generator</span>
+                        <span class="font-bold text-base uppercase tracking-wider">WOD Generator</span>
                     </div>
                     <i data-lucide="arrow-right" class="arrow-icon w-5 h-5 transition-transform duration-300"></i>
                 </div>
-            </button>
 
-            <!-- Link 2: 1RM Calculator - DEBUGGED: Added justify-between to inner div -->
-            <button onclick="openModal('one-rm')" class="link-card block w-full border border-white p-4 rounded-lg group text-left">
-                <div class="flex items-center justify-between"> 
+                <div data-tool="1rm" class="link-card tool-btn p-4 rounded-xl flex items-center justify-between"> 
                     <div class="flex items-center space-x-4">
                         <i data-lucide="dumbbell" class="w-5 h-5"></i>
-                        <span class="font-bold text-lg uppercase tracking-wide">1RM Calculator</span>
+                        <span class="font-bold text-base uppercase tracking-wider">1RM Calculator</span>
                     </div>
                     <i data-lucide="arrow-right" class="arrow-icon w-5 h-5 transition-transform duration-300"></i>
                 </div>
-            </button>
 
-            <!-- Link 3: Calorie and Macro Calculator - DEBUGGED: Fixed arrow icon class name -->
-            <button onclick="openModal('macro')" class="link-card block w-full border border-white p-4 rounded-lg group text-left">
-                <div class="flex items-center justify-between">
+                <div data-tool="calorie" class="link-card tool-btn p-4 rounded-xl flex items-center justify-between">
                     <div class="flex items-center space-x-4">
                         <i data-lucide="utensils" class="w-5 h-5"></i>
-                        <span class="font-bold text-lg uppercase tracking-wide">Calorie & Macro Calculator</span>
+                        <span class="font-bold text-base uppercase tracking-wider">Calorie Calculator</span>
                     </div>
                     <i data-lucide="arrow-right" class="arrow-icon w-5 h-5 transition-transform duration-300"></i>
                 </div>
-            </button>
-            
-            <!-- Link 4: Bodyfat Calculator -->
-            <button onclick="openModal('bodyfat')" class="link-card block w-full border border-white p-4 rounded-lg group text-left">
-                <div class="flex items-center justify-between">
+                
+                <div data-tool="bodyfat" class="link-card tool-btn p-4 rounded-xl flex items-center justify-between">
                     <div class="flex items-center space-x-4">
-                        <i data-lucide="scan" class="w-5 h-5"></i>
-                        <span class="font-bold text-lg uppercase tracking-wide">Estimated Bodyfat Calculator</span>
+                        <i data-lucide="ruler" class="w-5 h-5"></i>
+                        <span class="font-bold text-base uppercase tracking-wider">Bodyfat Calculator</span>
                     </div>
                     <i data-lucide="arrow-right" class="arrow-icon w-5 h-5 transition-transform duration-300"></i>
                 </div>
-            </button>
 
-            <!-- Link 5: Interval Timer (Updated from Tabata Timer) -->
-            <button onclick="openModal('timer')" class="link-card block w-full border border-white p-4 rounded-lg group text-left">
-                <div class="flex items-center justify-between">
+                <div data-tool="timer" class="link-card tool-btn p-4 rounded-xl flex items-center justify-between">
                     <div class="flex items-center space-x-4">
                         <i data-lucide="timer" class="w-5 h-5"></i>
-                        <span class="font-bold text-lg uppercase tracking-wide">Interval Timer</span>
+                        <span class="font-bold text-base uppercase tracking-wider">Interval Timer</span>
                     </div>
                     <i data-lucide="arrow-right" class="arrow-icon w-5 h-5 transition-transform duration-300"></i>
                 </div>
-            </button>
 
-            <!-- Featured/Different Link -->
-            <a href="#" class="link-card block w-full bg-white text-black border border-white p-4 rounded-lg hover:bg-gray-200 hover:text-black mt-6">
-                <div class="flex items-center justify-between">
+                <div data-tool="newsletter" class="newsletter-cta tool-btn p-4 rounded-xl mt-6 shadow-md flex items-center justify-between">
                     <div class="flex items-center space-x-4">
                         <i data-lucide="mail" class="w-5 h-5"></i>
-                        <span class="font-bold text-lg uppercase tracking-wide">Join the Newsletter</span>
+                        <span class="font-bold text-base uppercase tracking-wider">Join the Newsletter</span>
                     </div>
-                    <span class="text-xs font-bold border border-black px-2 py-0.5 rounded">FREE</span>
+                    <span class="text-[10px] font-black bg-white text-black px-2 py-0.5 rounded uppercase">FREE</span>
                 </div>
-            </a>
+            </div>
 
+            <!-- Social Media Section with Subheadings -->
+            <div class="flex justify-center space-x-12 mt-12 pb-4">
+                <a href="#" class="group flex flex-col items-center gap-2 hover:opacity-100 transition-all opacity-50" style="color: var(--text-main)">
+                    <i data-lucide="message-circle" class="w-6 h-6"></i>
+                    <span class="text-[9px] font-black uppercase tracking-widest">WhatsApp</span>
+                </a>
+                <a href="#" class="group flex flex-col items-center gap-2 hover:opacity-100 transition-all opacity-50" style="color: var(--text-main)">
+                    <i data-lucide="instagram" class="w-6 h-6"></i>
+                    <span class="text-[9px] font-black uppercase tracking-widest">Instagram</span>
+                </a>
+                <a href="#" class="group flex flex-col items-center gap-2 hover:opacity-100 transition-all opacity-50" style="color: var(--text-main)">
+                    <i data-lucide="facebook" class="w-6 h-6"></i>
+                    <span class="text-[9px] font-black uppercase tracking-widest">Facebook</span>
+                </a>
+            </div>
+        </main>
+    </div>
+
+    <!-- Reverted Comprehensive Footer -->
+    <footer class="w-full text-center py-8 px-6 max-w-lg" style="color: var(--text-muted)">
+        <!-- Medical Disclaimer -->
+        <div class="mb-6 space-y-2">
+            <h4 class="text-[9px] font-black uppercase tracking-[0.2em]">Disclaimer</h4>
+            <p class="text-[8px] leading-normal normal-case opacity-70 italic">
+                The content provided by these tools is for informational and educational purposes only and is not intended as medical advice or a substitute for professional consultation with a qualified healthcare provider. Always seek the advice of your physician or other qualified health provider with any questions you may have regarding a medical condition or physical activity.
+            </p>
         </div>
 
-        <!-- Social Icons -->
-        <div class="flex justify-center space-x-6 mt-12">
-            <a href="#" class="text-gray-400 hover:text-white transition-colors">
-                <i data-lucide="instagram" class="w-6 h-6"></i>
-            </a>
-            <a href="#" class="text-gray-400 hover:text-white transition-colors">
-                <i data-lucide="twitter" class="w-6 h-6"></i>
-            </a>
-            <a href="#" class="text-gray-400 hover:text-white transition-colors">
-                <i data-lucide="youtube" class="w-6 h-6"></i>
-            </a>
+        <!-- Copyright Info -->
+        <div class="text-[8px] sm:text-[9px] uppercase tracking-[0.1em] sm:tracking-[0.15em] font-bold leading-relaxed">
+            <p>&copy; <span id="current-year"></span> COACH CHRIS | CIRCULAR ROOTS COACHING | TRAIN UNCNVNTNL</p>
+            <p>All Rights Reserved.</p>
+            <p class="mt-2 text-[8px] opacity-60 italic">- Fitter Stronger Better -</p>
         </div>
-
-    </main>
-
-    <footer class="w-full text-center py-6 text-gray-600 text-xs">
-        <p>&copy; 2024 Circular Roots Coaching. All Rights Reserved.</p>
     </footer>
 
-    <!-- 1. WOD GENERATOR MODAL -->
-    <div id="wod-modal" class="tool-modal fixed inset-0 bg-black flex flex-col items-center justify-start modal-closed">
-        <button onclick="closeModal('wod')" class="absolute top-6 right-6 p-2 text-white hover:opacity-70 transition-opacity">
-            <i data-lucide="x" class="w-8 h-8"></i>
-        </button>
-        <div class="w-full max-w-md p-6 sm:p-8 pt-16 overflow-y-auto h-full">
-            <h2 class="font-brand text-4xl uppercase tracking-widest font-bold mb-8 text-center">WOD Generator</h2>
-            <p class="text-center text-sm text-gray-400 mb-6">Generate a quick 15-30 minute workout.</p>
-
-            <!-- Input Form -->
-            <div id="wod-input-form" class="space-y-4">
-                <label class="block">
-                    <span class="text-sm font-bold block mb-1">Equipment</span>
-                    <select id="wod-equipment" class="w-full">
-                        <option value="combined">Kettlebell & Bodyweight (Combined)</option>
-                        <option value="kettlebell">Kettlebell Only</option>
-                        <option value="bodyweight">Bodyweight Only</option>
-                    </select>
-                </label>
-                <label class="block">
-                    <span class="text-sm font-bold block mb-1">Workout Format</span>
-                    <select id="wod-format" class="w-full">
-                        <option value="random">Random Format</option>
-                        <option value="AMRAP">AMRAP (As Many Rounds As Possible)</option>
-                        <option value="EMOM">EMOM (Every Minute On the Minute)</option>
-                        <option value="FOR TIME">FOR TIME (Fixed Rounds)</option>
-                        <option value="CHIPPER">Chipper (High Rep)</option>
-                        <option value="TABATA">Timed Intervals (Tabata)</option>
-                    </select>
-                </label>
-                
-                <button onclick="generateWOD()" class="w-full mt-6 py-4 bg-white text-black text-xl font-bold uppercase rounded-sm hover:opacity-80 transition-opacity">
-                    Generate WOD
-                </button>
-            </div>
-
-            <!-- Result Display -->
-            <div id="wod-result" class="mt-8 pt-6 border-t border-gray-700 space-y-6 hidden">
-                <h3 class="text-xl font-bold uppercase tracking-wider mb-2">Your Workout of the Day:</h3>
-                
-                <div class="p-4 border border-white rounded-lg">
-                    <p class="text-sm uppercase text-gray-400 mb-1">Format</p>
-                    <p class="text-3xl font-brand font-bold" id="wod-format-display">AMRAP</p>
-                    <p class="text-sm uppercase text-gray-400 mt-3 mb-1">Time Goal / Structure</p>
-                    <p class="text-lg font-bold" id="wod-goal-display">20 Minute Time Cap</p>
-                </div>
-
-                <div class="space-y-4" id="wod-instructions">
-                    <!-- Instructions will be inserted here -->
-                </div>
-                
-                <button onclick="resetWOD()" class="w-full py-3 text-sm font-bold uppercase tracking-wider opacity-60 hover:opacity-100 transition-opacity">
-                    GENERATE NEW WOD
-                </button>
-            </div>
-            <p id="wod-error" class="text-red-500 text-sm mt-4 hidden text-center">
-                An error occurred during generation.
-            </p>
-        </div>
-    </div>
-
-    <!-- 2. 1RM CALCULATOR MODAL -->
-    <div id="one-rm-modal" class="tool-modal fixed inset-0 bg-black flex flex-col items-center justify-start modal-closed">
-        <button onclick="closeModal('one-rm')" class="absolute top-6 right-6 p-2 text-white hover:opacity-70 transition-opacity">
-            <i data-lucide="x" class="w-8 h-8"></i>
-        </button>
-        <div class="w-full max-w-md p-6 sm:p-8 pt-16 overflow-y-auto h-full">
-            <h2 class="font-brand text-4xl uppercase tracking-widest font-bold mb-8 text-center">1RM Calculator</h2>
-            
-            <div id="one-rm-input-form" class="space-y-4">
-                <label class="block">
-                    <span class="text-sm font-bold block mb-1">Weight Lifted</span>
-                    <div class="flex space-x-2">
-                        <input id="one-rm-weight" type="number" placeholder="e.g., 100" class="flex-grow">
-                        <select id="one-rm-unit" class="w-20">
-                            <option value="kg">kg</option>
-                            <option value="lb">lb</option>
-                        </select>
-                    </div>
-                </label>
-                <label class="block">
-                    <span class="text-sm font-bold block mb-1">Repetitions Performed (1-10)</span>
-                    <input id="one-rm-reps" type="number" min="1" max="10" placeholder="e.g., 5" class="w-full">
-                </label>
-                
-                <button onclick="calculateOneRM()" class="w-full mt-6 py-4 bg-white text-black text-xl font-bold uppercase rounded-sm hover:opacity-80 transition-opacity">
-                    Calculate 1RM
-                </button>
-            </div>
-
-            <div id="one-rm-result" class="mt-8 pt-6 border-t border-gray-700 space-y-4 hidden">
-                <h3 class="text-xl font-bold uppercase tracking-wider mb-2">Estimated Strength</h3>
-                <div class="p-4 border border-white rounded-lg">
-                    <p class="text-sm uppercase text-gray-400">Your Max Lift (1RM - Epley Formula)</p>
-                    <p class="text-5xl font-brand font-bold mt-1">
-                        <span id="result-weight">0</span> <span id="result-unit" class="text-xl">kg</span>
-                    </p>
-                </div>
-                <!-- Training Zones and Weights Table -->
-                <div id="one-rm-zones">
-                    <!-- Table content will be inserted here by JavaScript -->
-                </div>
-                <button onclick="resetOneRM()" class="w-full py-3 text-sm font-bold uppercase tracking-wider opacity-60 hover:opacity-100 transition-opacity">
-                    RECALCULATE
-                </button>
-            </div>
-            <p id="one-rm-error" class="text-red-500 text-sm mt-4 hidden text-center">
-                Please enter a valid weight (1+) and reps (1-10).
-            </p>
-
-        </div>
-    </div>
-
-
-    <!-- 3. CALORIE/MACRO CALCULATOR MODAL -->
-    <div id="macro-modal" class="tool-modal fixed inset-0 bg-black flex flex-col items-center justify-start modal-closed">
-        <button onclick="closeModal('macro')" class="absolute top-6 right-6 p-2 text-white hover:opacity-70 transition-opacity">
-            <i data-lucide="x" class="w-8 h-8"></i>
-        </button>
-        <div class="w-full max-w-md p-6 sm:p-8 pt-16 overflow-y-auto h-full">
-            <h2 class="font-brand text-4xl uppercase tracking-widest font-bold mb-8 text-center">Calorie & Macro Calculator</h2>
-            
-            <!-- Input Form -->
-            <div id="macro-input-form" class="space-y-4">
-                
-                <!-- Unit System Toggle -->
-                <label class="block">
-                    <span class="text-sm font-bold block mb-1">Units</span>
-                    <select id="macro-unit-system" class="w-full" onchange="toggleMacroUnits()">
-                        <option value="metric">Metric (kg, cm)</option>
-                        <option value="imperial">Imperial (lb, ft/in)</option>
-                    </select>
-                </label>
-
-                <label class="block">
-                    <span class="text-sm font-bold block mb-1">Gender</span>
-                    <select id="macro-gender" class="w-full">
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                    </select>
-                </label>
-                <div class="grid grid-cols-3 gap-3">
-                    <label class="block">
-                        <span class="text-sm font-bold block mb-1">Age</span>
-                        <input id="macro-age" type="number" min="15" max="100" placeholder="Years" class="w-full">
-                    </label>
-
-                    <!-- Height Inputs (Dynamic based on unit) -->
-                    <div id="macro-height-cm-group" class="block col-span-2">
-                        <span class="text-sm font-bold block mb-1">Height (cm)</span>
-                        <input id="macro-height-cm" type="number" min="100" max="250" placeholder="e.g., 175" class="w-full">
-                    </div>
-                    <div id="macro-height-ftin-group" class="grid grid-cols-2 gap-2 col-span-2 hidden">
-                        <div>
-                            <span class="text-sm font-bold block mb-1">Height (ft)</span>
-                            <input id="macro-height-ft" type="number" min="3" max="8" placeholder="e.g., 5" class="w-full">
-                        </div>
-                        <div>
-                            <span class="text-sm font-bold block mb-1">Height (in)</span>
-                            <input id="macro-height-in" type="number" min="0" max="11" placeholder="e.g., 9" class="w-full">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Weight Input (Dynamic label) -->
-                <label class="block">
-                    <span id="macro-weight-label" class="text-sm font-bold block mb-1">Weight (kg)</span>
-                    <input id="macro-weight" type="number" min="30" max="300" placeholder="e.g., 75" class="w-full">
-                </label>
-
-                <label class="block">
-                    <span class="text-sm font-bold block mb-1">Activity Level</span>
-                    <select id="macro-activity" class="w-full">
-                        <option value="1.2">Sedentary (Little or no exercise)</option>
-                        <option value="1.375">Light (1-3 days/week)</option>
-                        <option value="1.55">Moderate (3-5 days/week)</option>
-                        <option value="1.725">High (6-7 days/week)</option>
-                        <option value="1.9">Extreme (Athlete, 2x per day)</option>
-                    </select>
-                </label>
-                
-                <button onclick="calculateMacros()" class="w-full mt-6 py-4 bg-white text-black text-xl font-bold uppercase rounded-sm hover:opacity-80 transition-opacity">
-                    Calculate Macros
-                </button>
-            </div>
-
-            <!-- Result Display -->
-            <div id="macro-result" class="mt-8 pt-6 border-t border-gray-700 space-y-6 hidden">
-                <h3 class="text-xl font-bold uppercase tracking-wider mb-4">Results Summary</h3>
-
-                <!-- TDEE Section -->
-                <div class="p-4 border border-white rounded-lg text-center">
-                    <p class="text-sm uppercase text-gray-400">Your Total Daily Energy Expenditure (TDEE)</p>
-                    <p class="text-5xl font-brand font-bold mt-1" id="tdee-display">2500</p>
-                    <p class="text-lg uppercase text-gray-400">Maintenance / Recomp Calories</p>
-                </div>
-
-                <!-- Goals Section -->
-                <div class="space-y-4">
-                    <h4 class="text-lg font-bold uppercase">Calorie Goals (300 kcal Adjustment)</h4>
-                    <div class="grid grid-cols-2 gap-4 text-center">
-                        <div class="bg-gray-900 p-3 rounded-lg">
-                            <p class="text-xs uppercase text-gray-500">Weight-loss / Fat-loss</p>
-                            <p class="text-2xl font-brand font-bold mt-1" id="cutting-cal">2200 kcal</p>
-                        </div>
-                        <div class="bg-gray-900 p-3 rounded-lg">
-                            <p class="text-xs uppercase text-gray-500">Muscle Gain</p>
-                            <p class="text-2xl font-brand font-bold mt-1" id="bulking-cal">2800 kcal</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Macros Section -->
-                <div class="space-y-4">
-                    <h4 class="text-lg font-bold uppercase">Macro Split (40P/30C/30F)</h4>
-                    <p class="text-sm text-gray-500 text-center">Based on Maintenance Calories</p>
-                    <div class="grid grid-cols-3 gap-2">
-                        <div class="bg-gray-900 p-3 rounded-lg text-center">
-                            <p class="text-xs uppercase text-red-500 font-bold">Protein</p>
-                            <p class="text-2xl font-brand font-bold mt-1" id="macro-protein">183g</p>
-                        </div>
-                        <div class="bg-gray-900 p-3 rounded-lg text-center">
-                            <p class="text-xs uppercase text-blue-500 font-bold">Carbs</p>
-                            <p class="text-2xl font-brand font-bold mt-1" id="macro-carbs">187g</p>
-                        </div>
-                        <div class="bg-gray-900 p-3 rounded-lg text-center">
-                            <p class="text-xs uppercase text-green-500 font-bold">Fat</p>
-                            <p class="text-2xl font-brand font-bold mt-1" id="macro-fat">83g</p>
-                        </div>
-                    </div>
-                </div>
-                <button onclick="resetMacro()" class="w-full py-3 text-sm font-bold uppercase tracking-wider opacity-60 hover:opacity-100 transition-opacity">
-                    RECALCULATE
-                </button>
-            </div>
-            <p id="macro-error" class="text-red-500 text-sm mt-4 hidden text-center">
-                Please ensure all fields are filled out with valid numbers.
-            </p>
-        </div>
-    </div>
-
-
-    <!-- 4. ESTIMATED BODYFAT CALCULATOR MODAL -->
-    <div id="bodyfat-modal" class="tool-modal fixed inset-0 bg-black flex flex-col items-center justify-start modal-closed">
-        <button onclick="closeModal('bodyfat')" class="absolute top-6 right-6 p-2 text-white hover:opacity-70 transition-opacity">
-            <i data-lucide="x" class="w-8 h-8"></i>
-        </button>
-        <div class="w-full max-w-md p-6 sm:p-8 pt-16 overflow-y-auto h-full">
-            <h2 class="font-brand text-4xl uppercase tracking-widest font-bold mb-8 text-center">Bodyfat Calculator</h2>
-            <p class="text-center text-sm text-gray-400 mb-6">Uses the US Navy Body Fat Formula.</p>
-
-            <!-- Input Form -->
-            <div id="bodyfat-input-form" class="space-y-4">
-
-                <!-- Unit System Toggle -->
-                <label class="block">
-                    <span class="text-sm font-bold block mb-1">Units</span>
-                    <select id="bodyfat-unit-system" class="w-full" onchange="toggleBodyfatUnits()">
-                        <option value="metric">Metric (cm)</option>
-                        <option value="imperial">Imperial (in, ft/in)</option>
-                    </select>
-                </label>
-
-                <label class="block">
-                    <span class="text-sm font-bold block mb-1">Gender</span>
-                    <select id="bodyfat-gender" class="w-full" onchange="toggleHipInput()">
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                    </select>
-                </label>
-
-                <!-- Height Inputs (Dynamic based on unit) -->
-                <div id="bodyfat-height-cm-group" class="block">
-                    <span class="text-sm font-bold block mb-1">Height (cm)</span>
-                    <input id="bodyfat-height-cm" type="number" min="100" max="250" placeholder="e.g., 175" class="w-full">
-                </div>
-                <div id="bodyfat-height-ftin-group" class="grid grid-cols-2 gap-2 hidden">
-                    <div>
-                        <span class="text-sm font-bold block mb-1">Height (ft)</span>
-                        <input id="bodyfat-height-ft" type="number" min="3" max="8" placeholder="e.g., 5" class="w-full">
-                    </div>
-                    <div>
-                        <span class="text-sm font-bold block mb-1">Height (in)</span>
-                        <input id="bodyfat-height-in" type="number" min="0" max="11" placeholder="e.g., 9" class="w-full">
-                    </div>
-                </div>
-
-                <!-- Circumference Inputs (Dynamic label) -->
-                <label class="block">
-                    <span id="bodyfat-neck-label" class="text-sm font-bold block mb-1">Neck Circumference (cm)</span>
-                    <input id="bodyfat-neck" type="number" min="20" max="80" placeholder="e.g., 38" class="w-full">
-                </label>
-                <label class="block">
-                    <span id="bodyfat-waist-label" class="text-sm font-bold block mb-1">Waist Circumference (cm) - measured at navel</span>
-                    <input id="bodyfat-waist" type="number" min="50" max="150" placeholder="e.g., 85" class="w-full">
-                </label>
-                <label id="bodyfat-hip-field" class="block hidden">
-                    <span id="bodyfat-hip-label" class="text-sm font-bold block mb-1">Hip Circumference (cm) - Women Only</span>
-                    <input id="bodyfat-hip" type="number" min="60" max="160" placeholder="e.g., 95" class="w-full">
-                </label>
-                
-                <button onclick="calculateBodyFat()" class="w-full mt-6 py-4 bg-white text-black text-xl font-bold uppercase rounded-sm hover:opacity-80 transition-opacity">
-                    Calculate Bodyfat
-                </button>
-            </div>
-
-            <!-- Result Display -->
-            <div id="bodyfat-result" class="mt-8 pt-6 border-t border-gray-700 space-y-4 hidden">
-                <h3 class="text-xl font-bold uppercase tracking-wider mb-2">Estimated Body Composition</h3>
-                <div class="p-4 border border-white rounded-lg text-center">
-                    <p class="text-sm uppercase text-gray-400">Body Fat Percentage</p>
-                    <p class="text-5xl font-brand font-bold mt-1" id="bf-result-percent">15.0%</p>
-                    <p class="text-lg font-bold mt-1">Category: <span id="bf-result-category">Acceptable</span></p>
-                </div>
-                <button onclick="resetBodyFat()" class="w-full py-3 text-sm font-bold uppercase tracking-wider opacity-60 hover:opacity-100 transition-opacity">
-                    RECALCULATE
-                </button>
-            </div>
-            <p id="bodyfat-error" class="text-red-500 text-sm mt-4 hidden text-center">
-                Please ensure all required measurements are entered with valid numbers.
-            </p>
-        </div>
-    </div>
-
-
-    <!-- 5. INTERVAL TIMER MODAL OVERLAY -->
-    <div id="timer-modal" class="tool-modal fixed inset-0 bg-black flex flex-col items-center justify-center modal-closed">
-        
-        <button onclick="closeModal('timer')" class="absolute top-6 right-6 p-2 text-current hover:opacity-70 transition-opacity">
-            <i data-lucide="x" class="w-8 h-8"></i>
-        </button>
-
-        <div id="timer-container" class="w-full max-w-md h-full flex flex-col justify-start p-8 text-center transition-colors duration-300">
-            
-            <!-- Timer Settings Panel -->
-            <div id="timer-settings-panel" class="w-full pt-16 space-y-4">
-                <h2 class="font-brand text-4xl uppercase tracking-widest font-bold mb-8 text-center">Interval Timer</h2>
-                <div class="grid grid-cols-2 gap-4">
-                    <label class="block">
-                        <span class="text-sm font-bold block mb-1">Work Time (s)</span>
-                        <input id="timer-work-time" type="number" value="45" min="5" max="300" class="w-full text-center">
-                    </label>
-                    <label class="block">
-                        <span class="text-sm font-bold block mb-1">Rest Time (s)</span>
-                        <input id="timer-rest-time" type="number" value="15" min="0" max="300" class="w-full text-center">
-                    </label>
-                    <label class="block">
-                        <span class="text-sm font-bold block mb-1">Cycles per Set</span>
-                        <input id="timer-cycles-per-set" type="number" value="8" min="1" max="50" class="w-full text-center">
-                    </label>
-                    <label class="block">
-                        <span class="text-sm font-bold block mb-1">Total Sets</span>
-                        <input id="timer-total-sets" type="number" value="3" min="1" max="20" class="w-full text-center">
-                    </label>
-                </div>
-                
-                <label class="block pt-4">
-                    <span class="text-sm font-bold block mb-1">Rest Between Sets (s) - Optional</span>
-                    <input id="timer-set-rest-time" type="number" value="60" min="0" max="600" class="w-full text-center">
-                </label>
-
-                <button onclick="loadTimerSettings()" class="w-full py-4 mt-6 bg-white text-black text-xl font-bold uppercase rounded-sm hover:opacity-80 transition-opacity">
-                    Set Timer
-                </button>
-            </div>
-
-            <!-- Timer Display Panel -->
-            <div id="timer-display-panel" class="hidden h-full flex flex-col justify-between py-12">
-                <!-- Top Status -->
-                <div class="pt-12">
-                    <h2 id="timer-label" class="font-brand text-4xl uppercase tracking-widest font-bold mb-2">READY</h2>
-                    <div class="flex justify-center items-center space-x-4 font-mono text-sm opacity-80">
-                        <span class="flex items-center space-x-2">CYCLE <span id="cycle-display" class="text-xl font-bold">1</span> / <span id="cycle-total-display">8</span></span>
-                        <span class="text-2xl font-bold">|</span>
-                        <span class="flex items-center space-x-2">SET <span id="set-display" class="text-xl font-bold">1</span> / <span id="set-total-display">3</span></span>
-                    </div>
-                </div>
-
-                <!-- Big Timer Display -->
-                <div class="flex-grow flex items-center justify-center">
-                    <div id="time-display" class="font-brand text-[10rem] leading-none font-bold tabular-nums">
-                        45
-                    </div>
-                </div>
-
-                <!-- Controls -->
-                <div class="pb-12 space-y-4 w-full">
-                    <button id="start-btn" onclick="toggleTimer()" class="w-full py-5 text-xl font-bold uppercase tracking-wider border-2 border-current rounded-none hover:opacity-80 transition-opacity flex items-center justify-center gap-3">
-                        <i data-lucide="play" class="w-6 h-6 fill-current"></i>
-                        <span id="start-text">START</span>
-                    </button>
-
-                    <button onclick="showSettings()" class="w-full py-3 text-sm font-bold uppercase tracking-wider opacity-60 hover:opacity-100 transition-opacity">
-                        CHANGE SETTINGS
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script>
-        // Initialize Lucide Icons
         lucide.createIcons();
-        
-        // Helper function for random selection
-        const randItem = (arr) => arr[Math.floor(Math.random() * arr.length)];
-        const randInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
-        // --- GLOBAL CONSTANTS ---
-        const LB_TO_KG = 0.453592;
-        const KG_TO_LB = 2.20462;
-        const CM_TO_IN = 0.393701;
-        const IN_TO_CM = 2.54;
-
-        // --- Universal Modal Control ---
-        function openModal(id) {
-            const modal = document.getElementById(id + '-modal');
-            if (modal) {
-                modal.classList.remove('modal-closed');
-                modal.classList.add('modal-open');
-                if (id === 'timer') {
-                    initAudio();
-                    showSettings(); // Always start on the settings screen
-                }
-                if (id === 'bodyfat') {
-                    // Initialize unit and gender fields
-                    toggleBodyfatUnits(); 
-                    toggleHipInput(); 
-                }
-                if (id === 'macro') {
-                    toggleMacroUnits();
-                }
-            }
-        }
-
-        function closeModal(id) {
-            const modal = document.getElementById(id + '-modal');
-            if (modal) {
-                modal.classList.remove('modal-open');
-                modal.classList.add('modal-closed');
-                if (id === 'timer') {
-                    resetTimer();
-                }
-            }
-        }
-
-        // --- 1. WOD GENERATOR LOGIC ---
-        const KB_MOVEMENTS = [
-            { name: "Kettlebell Swings", reps: [15, 20], fastReps: [10, 15] },
-            { name: "Goblet Squats", reps: [10, 15], fastReps: [8, 12] },
-            { name: "Single-Arm Clean & Press (per side)", reps: [5, 10], fastReps: [4, 8] },
-            { name: "Single-Arm Snatch (per side)", reps: [5, 10], fastReps: [4, 8] },
-            { name: "Kettlebell Halos (per direction)", reps: [8, 12], fastReps: [8, 10] },
-        ];
-
-        const BW_MOVEMENTS = [
-            { name: "Air Squats", reps: [20, 30], fastReps: [15, 20] },
-            { name: "Push-ups", reps: [10, 15], fastReps: [8, 12] },
-            { name: "Burpees", reps: [5, 10], fastReps: [4, 8] },
-            { name: "Jumping Jacks", reps: [30, 50], fastReps: [20, 40] },
-            { name: "V-Ups / Crunches", reps: [15, 25], fastReps: [12, 20] },
-            { name: "Plank Hold (seconds)", reps: [30, 60], fastReps: [20, 45] },
-        ];
-        
-        const WOD_FORMATS = ["AMRAP", "EMOM", "FOR TIME", "CHIPPER", "TABATA"];
-
-        function getMovements(equipment, count) {
-            let availableMoves = [];
-            if (equipment === 'kettlebell') {
-                availableMoves = KB_MOVEMENTS;
-            } else if (equipment === 'bodyweight') {
-                availableMoves = BW_MOVEMENTS;
-            } else { // combined
-                availableMoves = [...KB_MOVEMENTS, ...BW_MOVEMENTS];
-            }
+        document.addEventListener('DOMContentLoaded', () => {
+            const body = document.body;
+            const themeToggle = document.getElementById('theme-toggle');
+            const yearSpan = document.getElementById('current-year');
+            const infoModal = document.getElementById('modal-overlay');
+            const devModal = document.getElementById('dev-modal-overlay');
+            const devTitle = document.getElementById('dev-title');
+            const devText = document.getElementById('dev-text');
+            const devIconWrapper = document.getElementById('dev-icon-wrapper');
             
-            // Randomly select unique movements
-            const selected = [];
-            const movesCopy = [...availableMoves];
-            for (let i = 0; i < count && movesCopy.length > 0; i++) {
-                const index = randInt(0, movesCopy.length - 1);
-                selected.push(movesCopy.splice(index, 1)[0]);
-            }
-            return selected;
-        }
-
-        function generateWOD() {
-            const equipment = document.getElementById('wod-equipment').value;
-            let format = document.getElementById('wod-format').value;
-            const resultDiv = document.getElementById('wod-result');
-            const formDiv = document.getElementById('wod-input-form');
-            const formatDisplay = document.getElementById('wod-format-display');
-            const goalDisplay = document.getElementById('wod-goal-display');
-            const instructionsDiv = document.getElementById('wod-instructions');
-
-            // --- Select Format ---
-            if (format === 'random') {
-                format = randItem(WOD_FORMATS);
-            }
-
-            // --- Generate WOD based on format ---
-            let goalText = '';
-            let instructionsHtml = '';
-            let movements;
-
-            try {
-                switch (format) {
-                    case "AMRAP":
-                        const amrapTime = randItem([15, 18, 20]);
-                        movements = getMovements(equipment, randInt(3, 4));
-                        goalText = `${amrapTime} Minute AMRAP (As Many Rounds As Possible)`;
-                        
-                        instructionsHtml = movements.map(m => {
-                            const reps = randInt(m.reps[0], m.reps[1]);
-                            return `<div class="p-2 bg-gray-900 rounded-md font-mono text-lg">${reps} x ${m.name}</div>`;
-                        }).join('');
-                        instructionsHtml += `<p class="mt-4 text-sm text-gray-400">Rest only as needed to maintain high intensity.</p>`;
-                        break;
-
-                    case "EMOM":
-                        const emomTime = randItem([16, 20, 24]);
-                        movements = getMovements(equipment, randInt(2, 3));
-                        goalText = `${emomTime} Minute EMOM (Every Minute On the Minute)`;
-
-                        instructionsHtml = movements.map((m, i) => {
-                            // Use fastReps for EMOM to ensure time for rest
-                            const reps = randInt(m.fastReps[0], m.fastReps[1]);
-                            const minute = (i % movements.length) + 1;
-                            return `<div class="p-2 bg-gray-900 rounded-md font-mono text-lg">Minute ${minute}: ${reps} x ${m.name}</div>`;
-                        }).join('');
-                        instructionsHtml += `<p class="mt-4 text-sm text-gray-400">Perform the designated movement in the minute. Rest for the remainder of the minute before the next task begins. Repeat this pattern for the full ${emomTime} minutes.</p>`;
-                        break;
-
-                    case "FOR TIME":
-                        const numRounds = randItem([4, 5, 6]);
-                        movements = getMovements(equipment, randInt(3, 5));
-                        goalText = `FOR TIME: ${numRounds} Rounds`;
-
-                        instructionsHtml = movements.map(m => {
-                            const reps = randInt(m.reps[0], m.reps[1]);
-                            return `<div class="p-2 bg-gray-900 rounded-md font-mono text-lg">${reps} x ${m.name}</div>`;
-                        }).join('');
-                        instructionsHtml = `
-                            <p class="font-bold text-xl mb-3">Complete ${numRounds} Rounds of:</p>
-                            <div class="space-y-2">${instructionsHtml}</div>
-                            <p class="mt-4 text-sm text-gray-400">Record your total time to completion. Target Time: 18-25 minutes.</p>
-                        `;
-                        break;
-                        
-                    case "CHIPPER":
-                        const initialRep = randItem([100, 80, 60]);
-                        movements = getMovements(equipment, randInt(4, 5));
-                        goalText = `CHIPPER: For Time`;
-
-                        instructionsHtml = movements.map((m, i) => {
-                            const reps = initialRep - (i * (initialRep / movements.length))
-                            return `<div class="p-2 bg-gray-900 rounded-md font-mono text-lg">${Math.round(reps / 10) * 10} x ${m.name}</div>`;
-                        }).join('');
-                        instructionsHtml = `
-                            <p class="font-bold text-xl mb-3">Complete all reps in order. Break up reps as needed:</p>
-                            <div class="space-y-2">${instructionsHtml}</div>
-                            <p class="mt-4 text-sm text-gray-400">Complete as quickly as possible. Time Cap: 30 minutes.</p>
-                        `;
-                        break;
-                        
-                    case "TABATA":
-                        const numIntervals = randItem([3, 4]);
-                        movements = getMovements(equipment, numIntervals);
-                        goalText = `Timed Interval Workout`;
-
-                        instructionsHtml = movements.map((m, i) => {
-                            return `
-                                <div class="p-2 bg-gray-900 rounded-md">
-                                    <p class="font-mono text-lg font-bold">INTERVAL ${i + 1}: ${m.name}</p>
-                                    <p class="text-sm">8 Rounds of 20 seconds work / 10 seconds rest.</p>
-                                </div>
-                            `;
-                        }).join('');
-                        instructionsHtml = `
-                            <p class="font-bold text-xl mb-3">Total Time: ${numIntervals * 4} Minutes (plus transition time between intervals).</p>
-                            <div class="space-y-2">${instructionsHtml}</div>
-                            <p class="mt-4 text-sm text-gray-400">Use the built-in Interval Timer on the main screen to track work and rest periods.</p>
-                        `;
-                        break;
-
-                    default:
-                        throw new Error("Invalid format.");
-                }
-            } catch(e) {
-                document.getElementById('wod-error').classList.remove('hidden');
-                return;
-            }
+            const toolData = {
+                'wod': { title: "Generating Heat", text: "We're curating the ultimate library of unconventional workouts. Our WOD engine is currently being tuned for maximum intensity.", icon: "zap" },
+                '1rm': { title: "Heavy Loading", text: "Calculating the perfect 1RM requires precision. We're finalizing the formulas to ensure your safety and accuracy in the rack.", icon: "dumbbell" },
+                'calorie': { title: "Fueling Up", text: "Nutrition is the foundation of performance. We're refining our metabolic algorithms to give you precise fueling targets.", icon: "utensils" },
+                'bodyfat': { title: "Precision Stats", text: "Our composition analyzer is undergoing final testing. Soon you'll be able to track your physical transformation with ease.", icon: "ruler" },
+                'timer': { title: "Synchronizing", text: "Timing is everything in interval training. Our performance clock is being calibrated for lag-free training sessions.", icon: "timer" },
+                'newsletter': { title: "Drafting Intel", text: "The first dispatch is almost ready. We're assembling the best unconventional training wisdom to send straight to your inbox.", icon: "mail" }
+            };
             
-            // --- Update UI ---
-            formatDisplay.textContent = format;
-            goalDisplay.textContent = goalText;
-            instructionsDiv.innerHTML = instructionsHtml;
+            if (yearSpan) yearSpan.textContent = new Date().getFullYear();
 
-            formDiv.classList.add('hidden');
-            document.getElementById('wod-error').classList.add('hidden');
-            resultDiv.classList.remove('hidden');
-        }
-        
-        function resetWOD() {
-            // Simply hide results and show form for WOD, as inputs are selects and don't need clearing.
-            document.getElementById('wod-result').classList.add('hidden'); 
-            document.getElementById('wod-input-form').classList.remove('hidden');
-            document.getElementById('wod-error').classList.add('hidden');
-        }
-
-
-        // --- 2. 1RM Calculator Logic ---
-        function generateTrainingZoneTable(oneRM, unit) {
-            const zones = [
-                { percent: 100, goal: "Max Effort / Testing" },
-                { percent: 95, goal: "Peak Strength (1-2 Reps)" },
-                { percent: 90, goal: "Heavy Strength (2-4 Reps)" },
-                { percent: 85, goal: "Strength / Power (4-6 Reps)" },
-                { percent: 80, goal: "Hypertrophy (6-8 Reps)" },
-                { percent: 75, goal: "Hypertrophy (8-10 Reps)" },
-                { percent: 70, goal: "Endurance / Hypertrophy (10-12 Reps)" },
-                { percent: 65, goal: "Muscular Endurance" },
-                { percent: 60, goal: "Conditioning / Warm-up" }
-            ];
-
-            let html = `
-                <h3 class="text-xl font-bold uppercase tracking-wider mb-2 mt-6">Training Zones (Weight Targets)</h3>
-                <p class="text-sm text-gray-400 mb-4">Use these percentages of your 1RM for programming:</p>
-                <div class="overflow-x-auto rounded-lg border border-gray-700">
-                    <table class="min-w-full divide-y divide-gray-700">
-                        <thead>
-                            <tr class="bg-gray-800 text-left text-xs font-semibold uppercase tracking-wider">
-                                <th class="p-3">Zone (%)</th>
-                                <th class="p-3">Weight (${unit})</th>
-                                <th class="p-3">Primary Goal</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-700">
-            `;
-
-            zones.forEach((zone, index) => {
-                const weight = oneRM * (zone.percent / 100);
-                const bgColor = index % 2 === 0 ? 'bg-gray-900' : 'bg-gray-950';
-
-                html += `
-                    <tr class="${bgColor}">
-                        <td class="p-3 text-lg font-bold">${zone.percent}%</td>
-                        <td class="p-3 text-lg font-bold">${weight.toFixed(1)}</td>
-                        <td class="p-3 text-sm">${zone.goal}</td>
-                    </tr>
-                `;
+            themeToggle.addEventListener('click', () => {
+                const isDark = body.getAttribute('data-theme') === 'dark';
+                body.setAttribute('data-theme', isDark ? 'light' : 'dark');
             });
 
-            html += `
-                        </tbody>
-                    </table>
-                </div>
-            `;
-            return html;
-        }
-        
-        function calculateOneRM() {
-            const weight = parseFloat(document.getElementById('one-rm-weight').value);
-            const reps = parseInt(document.getElementById('one-rm-reps').value, 10);
-            const unit = document.getElementById('one-rm-unit').value;
-            const resultDiv = document.getElementById('one-rm-result');
-            const zonesDiv = document.getElementById('one-rm-zones');
-            const errorDiv = document.getElementById('one-rm-error');
-            const formDiv = document.getElementById('one-rm-input-form');
+            const openModal = (m) => m.classList.add('active');
+            const closeModal = (m) => m.classList.remove('active');
 
-
-            resultDiv.classList.add('hidden');
-            errorDiv.classList.add('hidden');
-
-            if (isNaN(weight) || isNaN(reps) || weight <= 0 || reps < 1 || reps > 10) {
-                errorDiv.classList.remove('hidden');
-                return;
-            }
-
-            // Epley Formula: 1RM = Weight * (1 + (Reps / 30))
-            const oneRM = weight * (1 + (reps / 30));
-
-            document.getElementById('result-weight').textContent = oneRM.toFixed(1);
-            document.getElementById('result-unit').textContent = unit;
+            document.getElementById('open-info').addEventListener('click', () => openModal(infoModal));
+            document.getElementById('close-modal').addEventListener('click', () => closeModal(infoModal));
+            document.getElementById('modal-confirm').addEventListener('click', () => closeModal(infoModal));
             
-            // Generate and display training zones table
-            zonesDiv.innerHTML = generateTrainingZoneTable(oneRM, unit);
-            
-            formDiv.classList.add('hidden');
-            resultDiv.classList.remove('hidden');
-        }
-
-        function resetOneRM() {
-            document.getElementById('one-rm-weight').value = '';
-            document.getElementById('one-rm-reps').value = '';
-            document.getElementById('one-rm-result').classList.add('hidden');
-            document.getElementById('one-rm-input-form').classList.remove('hidden');
-            document.getElementById('one-rm-error').classList.add('hidden');
-            document.getElementById('one-rm-zones').innerHTML = '';
-        }
-
-
-        // --- 3. Calorie and Macro Calculator Logic ---
-        const PROTEIN_CAL_PER_G = 4;
-        const CARB_CAL_PER_G = 4;
-        const FAT_CAL_PER_G = 9;
-        const MACRO_SPLIT = { protein: 0.40, carbs: 0.30, fat: 0.30 };
-
-        function toggleMacroUnits() {
-            const unitSystem = document.getElementById('macro-unit-system').value;
-            const isImperial = unitSystem === 'imperial';
-
-            document.getElementById('macro-weight-label').textContent = isImperial ? 'Weight (lb)' : 'Weight (kg)';
-            
-            const cmGroup = document.getElementById('macro-height-cm-group');
-            const ftInGroup = document.getElementById('macro-height-ftin-group');
-
-            if (isImperial) {
-                cmGroup.classList.add('hidden');
-                ftInGroup.classList.remove('hidden');
-                document.getElementById('macro-weight').min = 60; // Min weight 60 lb
-                document.getElementById('macro-weight').max = 660; // Max weight 660 lb
-                document.getElementById('macro-weight').placeholder = 'e.g., 165';
-            } else {
-                cmGroup.classList.remove('hidden');
-                ftInGroup.classList.add('hidden');
-                document.getElementById('macro-weight').min = 30; // Min weight 30 kg
-                document.getElementById('macro-weight').max = 300; // Max weight 300 kg
-                document.getElementById('macro-weight').placeholder = 'e.g., 75';
-            }
-        }
-
-        function calculateMacros() {
-            const unitSystem = document.getElementById('macro-unit-system').value;
-            const isImperial = unitSystem === 'imperial';
-            
-            const gender = document.getElementById('macro-gender').value;
-            const age = parseInt(document.getElementById('macro-age').value, 10);
-            const weightInput = parseFloat(document.getElementById('macro-weight').value);
-            const activityMultiplier = parseFloat(document.getElementById('macro-activity').value);
-
-            let heightCm;
-            if (isImperial) {
-                const ft = parseFloat(document.getElementById('macro-height-ft').value) || 0;
-                const inches = parseFloat(document.getElementById('macro-height-in').value) || 0;
-                // Convert feet and inches to total inches, then to cm
-                const totalInches = (ft * 12) + inches;
-                heightCm = totalInches * IN_TO_CM;
-            } else {
-                heightCm = parseFloat(document.getElementById('macro-height-cm').value);
-            }
-
-            const resultDiv = document.getElementById('macro-result');
-            const formDiv = document.getElementById('macro-input-form');
-            const errorDiv = document.getElementById('macro-error');
-
-            resultDiv.classList.add('hidden');
-            errorDiv.classList.add('hidden');
-            
-            // Convert weight to KG for calculation (Mifflin-St Jeor formula expects KG and CM)
-            let weightKg = weightInput;
-            if (isImperial) {
-                weightKg = weightInput * LB_TO_KG;
-            }
-
-            if (isNaN(age) || isNaN(heightCm) || isNaN(weightKg) || age <= 0 || heightCm <= 0 || weightKg <= 0 || isNaN(activityMultiplier)) {
-                errorDiv.classList.remove('hidden');
-                return;
-            }
-
-            // Mifflin-St Jeor BMR Equation
-            let bmr;
-            if (gender === 'male') {
-                // BMR = (10 * kg) + (6.25 * cm) - (5 * age) + 5
-                bmr = (10 * weightKg) + (6.25 * heightCm) - (5 * age) + 5;
-            } else {
-                // BMR = (10 * kg) + (6.25 * cm) - (5 * age) - 161
-                bmr = (10 * weightKg) + (6.25 * heightCm) - (5 * age) - 161;
-            }
-
-            const tdee = Math.round(bmr * activityMultiplier);
-
-            // Calorie Goals 
-            const maintenance = tdee;
-            const cutting = tdee - 300; 
-            const bulking = tdee + 300; 
-
-            // Macro Breakdown (based on Maintenance Calories)
-            const proteinCal = maintenance * MACRO_SPLIT.protein;
-            const carbsCal = maintenance * MACRO_SPLIT.carbs;
-            const fatCal = maintenance * MACRO_SPLIT.fat;
-
-            const proteinGrams = Math.round(proteinCal / PROTEIN_CAL_PER_G);
-            const carbsGrams = Math.round(carbsCal / CARB_CAL_PER_G);
-            const fatGrams = Math.round(fatCal / FAT_CAL_PER_G);
-
-            // Update UI
-            document.getElementById('tdee-display').textContent = maintenance.toLocaleString();
-            document.getElementById('cutting-cal').textContent = `${cutting.toLocaleString()} kcal`;
-            document.getElementById('bulking-cal').textContent = `${bulking.toLocaleString()} kcal`;
-
-            document.getElementById('macro-protein').textContent = `${proteinGrams}g`;
-            document.getElementById('macro-carbs').textContent = `${carbsGrams}g`;
-            document.getElementById('macro-fat').textContent = `${fatGrams}g`;
-
-            formDiv.classList.add('hidden');
-            resultDiv.classList.remove('hidden');
-        }
-        
-        function resetMacro() {
-            document.getElementById('macro-age').value = '';
-            document.getElementById('macro-height-cm').value = '';
-            document.getElementById('macro-height-ft').value = '';
-            document.getElementById('macro-height-in').value = '';
-            document.getElementById('macro-weight').value = '';
-            document.getElementById('macro-result').classList.add('hidden');
-            document.getElementById('macro-input-form').classList.remove('hidden');
-            document.getElementById('macro-error').classList.add('hidden');
-            // Reset selects to first option
-            document.getElementById('macro-gender').selectedIndex = 0;
-            document.getElementById('macro-activity').selectedIndex = 0;
-            document.getElementById('macro-unit-system').selectedIndex = 0;
-            toggleMacroUnits();
-        }
-
-        
-        // --- 4. Estimated Bodyfat Calculator Logic ---
-        function toggleHipInput() {
-            const gender = document.getElementById('bodyfat-gender').value;
-            const hipField = document.getElementById('bodyfat-hip-field');
-            if (gender === 'female') {
-                hipField.classList.remove('hidden');
-            } else {
-                hipField.classList.add('hidden');
-            }
-            // Ensure inputs reset whenever the gender/unit changes to prevent confusion
-            document.getElementById('bodyfat-result').classList.add('hidden');
-            document.getElementById('bodyfat-input-form').classList.remove('hidden');
-        }
-
-        function toggleBodyfatUnits() {
-            const unitSystem = document.getElementById('bodyfat-unit-system').value;
-            const isImperial = unitSystem === 'imperial';
-            const unitLabel = isImperial ? 'in' : 'cm';
-
-            // Toggle height fields
-            const cmGroup = document.getElementById('bodyfat-height-cm-group');
-            const ftInGroup = document.getElementById('bodyfat-height-ftin-group');
-            if (isImperial) {
-                cmGroup.classList.add('hidden');
-                ftInGroup.classList.remove('hidden');
-            } else {
-                cmGroup.classList.remove('hidden');
-                ftInGroup.classList.add('hidden');
-            }
-
-            // Update circumference labels
-            document.getElementById('bodyfat-neck-label').textContent = `Neck Circumference (${unitLabel})`;
-            document.getElementById('bodyfat-waist-label').textContent = `Waist Circumference (${unitLabel}) - measured at navel`;
-            document.getElementById('bodyfat-hip-label').textContent = `Hip Circumference (${unitLabel}) - Women Only`;
-
-            // Reset view state
-            toggleHipInput();
-        }
-
-        function calculateBodyFat() {
-            const unitSystem = document.getElementById('bodyfat-unit-system').value;
-            const isImperial = unitSystem === 'imperial';
-            const gender = document.getElementById('bodyfat-gender').value;
-
-            const neckInput = parseFloat(document.getElementById('bodyfat-neck').value);
-            const waistInput = parseFloat(document.getElementById('bodyfat-waist').value);
-            const hipInput = parseFloat(document.getElementById('bodyfat-hip').value) || 0; 
-            
-            const resultDiv = document.getElementById('bodyfat-result');
-            const formDiv = document.getElementById('bodyfat-input-form');
-            const errorDiv = document.getElementById('bodyfat-error');
-
-            resultDiv.classList.add('hidden');
-            errorDiv.classList.add('hidden');
-            
-            // --- 1. Get Height Input & Convert to Inches ---
-            let heightIn;
-            if (isImperial) {
-                const ft = parseFloat(document.getElementById('bodyfat-height-ft').value) || 0;
-                const inches = parseFloat(document.getElementById('bodyfat-height-in').value) || 0;
-                heightIn = (ft * 12) + inches;
-            } else {
-                const heightCm = parseFloat(document.getElementById('bodyfat-height-cm').value);
-                heightIn = heightCm * CM_TO_IN;
-            }
-
-            // --- 2. Get Circumference Inputs & Convert to Inches ---
-            let neckIn = neckInput;
-            let waistIn = waistInput;
-            let hipIn = hipInput; 
-
-            if (!isImperial) {
-                neckIn *= CM_TO_IN;
-                waistIn *= CM_TO_IN;
-                hipIn *= CM_TO_IN;
-            }
-            
-            // --- 3. Input Validation (Ensure all required final values are valid) ---
-            if (isNaN(heightIn) || isNaN(neckIn) || isNaN(waistIn) || 
-                heightIn <= 0 || neckIn <= 0 || waistIn <= 0 || (gender === 'female' && isNaN(hipIn))
-            ) {
-                errorDiv.textContent = "Please ensure all required measurements are entered with valid numbers.";
-                errorDiv.classList.remove('hidden');
-                return;
-            }
-
-
-            let bodyFatPercent;
-            
-            // U.S. Navy Body Fat Formula (Simplified Log version, using Imperial inputs)
-            if (gender === 'male') {
-                if (waistIn <= neckIn) {
-                    errorDiv.textContent = "Waist must be larger than Neck circumference for calculation.";
-                    errorDiv.classList.remove('hidden');
-                    return;
-                }
-                // BF% = 86.010 * log10(waist - neck) - 70.041 * log10(height) + 36.76
-                bodyFatPercent = 86.010 * Math.log10(waistIn - neckIn) - 70.041 * Math.log10(heightIn) + 36.76;
-            } else { // female
-                // Check for positive log argument: waist + hip - neck > 0
-                 if (waistIn + hipIn <= neckIn) {
-                    errorDiv.textContent = "Sum of Waist and Hip must be larger than Neck circumference for calculation.";
-                    errorDiv.classList.remove('hidden');
-                    return;
-                }
-                // BF% = 163.205 * log10(waist + hip - neck) - 97.684 * log10(height) - 78.387
-                bodyFatPercent = 163.205 * Math.log10(waistIn + hipIn - neckIn) - 97.684 * Math.log10(heightIn) - 78.387;
-            }
-            
-            // Clamp result to reasonable range (e.g., 5% to 50%)
-            bodyFatPercent = Math.max(5, Math.min(50, bodyFatPercent));
-
-            // Update UI
-            document.getElementById('bf-result-percent').textContent = bodyFatPercent.toFixed(1) + '%';
-            
-            // Determine category
-            const category = getBodyFatCategory(gender, bodyFatPercent);
-            document.getElementById('bf-result-category').textContent = category;
-
-            formDiv.classList.add('hidden');
-            resultDiv.classList.remove('hidden');
-        }
-
-        function resetBodyFat() {
-            // Clear inputs
-            document.getElementById('bodyfat-height-cm').value = '';
-            document.getElementById('bodyfat-height-ft').value = '';
-            document.getElementById('bodyfat-height-in').value = '';
-            document.getElementById('bodyfat-neck').value = '';
-            document.getElementById('bodyfat-waist').value = '';
-            document.getElementById('bodyfat-hip').value = '';
-
-            // Reset UI state
-            document.getElementById('bodyfat-result').classList.add('hidden');
-            document.getElementById('bodyfat-input-form').classList.remove('hidden');
-            document.getElementById('bodyfat-error').classList.add('hidden');
-            
-            // Reset gender and unit selections
-            document.getElementById('bodyfat-gender').selectedIndex = 0;
-            document.getElementById('bodyfat-unit-system').selectedIndex = 0;
-            toggleBodyfatUnits(); 
-        }
-
-        function getBodyFatCategory(gender, bf) {
-            if (gender === 'male') {
-                if (bf <= 5) return "Essential Fat";
-                if (bf <= 13) return "Athlete";
-                if (bf <= 17) return "Fitness";
-                if (bf <= 24) return "Acceptable";
-                return "Obese";
-            } else { // female
-                if (bf <= 13) return "Essential Fat";
-                if (bf <= 20) return "Athlete";
-                if (bf <= 24) return "Fitness";
-                if (bf <= 31) return "Acceptable";
-                return "Obese";
-            }
-        }
-
-        // --- 5. Interval Timer Logic (Refactored) ---
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        let audioCtx;
-        let timerInterval = null;
-
-        // Configuration and State
-        let settings = {
-            workTime: 45,
-            restTime: 15,
-            setRestTime: 60,
-            cyclesPerSet: 8,
-            totalSets: 3
-        };
-
-        let state = {
-            timeLeft: settings.workTime,
-            currentSet: 1,
-            currentCycle: 1,
-            isWork: true,      // true: Work, false: Rest
-            isSetRest: false,  // true: Resting between sets
-            isRunning: false,
-            isReady: false
-        };
-
-        const container = document.getElementById('timer-container');
-        const timeDisplay = document.getElementById('time-display');
-        const cycleDisplay = document.getElementById('cycle-display');
-        const setDisplay = document.getElementById('set-display');
-        const statusLabel = document.getElementById('timer-label');
-        const startBtn = document.getElementById('start-btn');
-        const cycleTotalDisplay = document.getElementById('cycle-total-display');
-        const setTotalDisplay = document.getElementById('set-total-display');
-        const settingsPanel = document.getElementById('timer-settings-panel');
-        const displayPanel = document.getElementById('timer-display-panel');
-
-        function showSettings() {
-            resetTimer();
-            settingsPanel.classList.remove('hidden');
-            displayPanel.classList.add('hidden');
-            state.isReady = false;
-        }
-
-        function loadTimerSettings() {
-            // Read and validate inputs
-            const work = parseInt(document.getElementById('timer-work-time').value);
-            const rest = parseInt(document.getElementById('timer-rest-time').value);
-            const setRest = parseInt(document.getElementById('timer-set-rest-time').value);
-            const cycles = parseInt(document.getElementById('timer-cycles-per-set').value);
-            const sets = parseInt(document.getElementById('timer-total-sets').value);
-
-            if (work < 5 || rest < 0 || cycles < 1 || sets < 1 || setRest < 0 || isNaN(work) || isNaN(rest) || isNaN(cycles) || isNaN(sets) || isNaN(setRest)) {
-                // In a real app, use a proper message box instead of logging
-                console.error("Invalid timer settings. Please check all fields.");
-                return; 
-            }
-            
-            // Apply settings
-            settings.workTime = work;
-            settings.restTime = rest;
-            settings.setRestTime = setRest;
-            settings.cyclesPerSet = cycles;
-            settings.totalSets = sets;
-
-            // Initialize state for start
-            state.timeLeft = settings.workTime;
-            state.currentSet = 1;
-            state.currentCycle = 1;
-            state.isWork = true;
-            state.isSetRest = false;
-            state.isReady = true;
-
-            // Update display totals and initial state
-            cycleTotalDisplay.textContent = settings.cyclesPerSet;
-            setTotalDisplay.textContent = settings.totalSets;
-            
-            updateDisplay();
-            setTheme('rest'); // Start in a neutral/ready state
-
-            // Switch to display view
-            settingsPanel.classList.add('hidden');
-            displayPanel.classList.remove('hidden');
-        }
-
-        function initAudio() {
-            if (!audioCtx) {
-                audioCtx = new AudioContext();
-            }
-            // Attempt to resume audio context if suspended (common issue on mobile)
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-        }
-
-        function beep(freq = 600, duration = 100, type = 'sine') {
-            if (!audioCtx) return;
-            const osc = audioCtx.createOscillator();
-            const gainNode = audioCtx.createGain();
-
-            osc.type = type;
-            osc.frequency.value = freq;
-            osc.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-
-            osc.start();
-            
-            gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration / 1000);
-
-            osc.stop(audioCtx.currentTime + duration / 1000);
-        }
-
-        function toggleTimer() {
-            if (!state.isReady) {
-                // Timer hasn't been set up yet, force setup
-                loadTimerSettings();
-                if (!state.isReady) return; // Should not happen if loadTimerSettings is successful
-            }
-            
-            if (state.isRunning) {
-                stopTimer();
-            } else {
-                startTimer();
-            }
-        }
-
-        function startTimer() {
-            if (statusLabel.innerText === 'DONE') {
-                // If it was finished, hitting start restarts it
-                loadTimerSettings();
-            }
-            
-            state.isRunning = true;
-            initAudio();
-            startBtn.innerHTML = `<i data-lucide="pause" class="w-6 h-6 fill-current"></i> <span id="start-text">PAUSE</span>`;
-            lucide.createIcons();
-            
-            if (statusLabel.innerText === 'READY') {
-                 statusLabel.innerText = "WORK";
-                 setTheme('work');
-            } else if (state.isWork) {
-                 setTheme('work');
-            } else if (state.isSetRest) {
-                 setTheme('set-rest');
-            } else {
-                 setTheme('rest');
-            }
-
-            timerInterval = setInterval(() => {
-                state.timeLeft--;
-                updateDisplay();
-
-                if (state.timeLeft > 0 && state.timeLeft <= 3) {
-                    beep(600, 100, 'square'); 
-                }
-
-                if (state.timeLeft < 0) {
-                    switchPhase();
-                }
-            }, 1000);
-        }
-
-        function stopTimer() {
-            state.isRunning = false;
-            clearInterval(timerInterval);
-            // Check if timer is done before setting resume text
-            if (statusLabel.innerText !== 'DONE') {
-                startBtn.innerHTML = `<i data-lucide="play" class="w-6 h-6 fill-current"></i> <span id="start-text">RESUME</span>`;
-                lucide.createIcons();
-            }
-        }
-
-        function resetTimer() {
-            stopTimer();
-            clearInterval(timerInterval);
-            
-            // Reset state to initial configured values
-            state.timeLeft = settings.workTime;
-            state.currentSet = 1;
-            state.currentCycle = 1;
-            state.isWork = true;
-            state.isSetRest = false;
-            state.isRunning = false;
-            
-            startBtn.innerHTML = `<i data-lucide="play" class="w-6 h-6 fill-current"></i> <span id="start-text">START</span>`;
-            lucide.createIcons();
-            
-            container.classList.remove('state-work', 'state-rest', 'state-set-rest');
-            statusLabel.innerText = "READY";
-            
-            updateDisplay();
-        }
-
-        function switchPhase() {
-            beep(900, 300, 'square'); 
-
-            if (state.isWork) {
-                // Transition: Work -> Rest
-                state.isWork = false;
-                
-                // Check if this was the last cycle of the set
-                if (state.currentCycle < settings.cyclesPerSet) {
-                    // Normal rest between cycles
-                    state.timeLeft = settings.restTime;
-                    statusLabel.innerText = "REST";
-                    setTheme('rest');
-                } else if (state.currentSet < settings.totalSets && settings.setRestTime > 0) {
-                    // Set is over, take set rest
-                    state.isSetRest = true;
-                    state.timeLeft = settings.setRestTime;
-                    statusLabel.innerText = "SET REST";
-                    setTheme('set-rest');
-                } else {
-                    // Last cycle of last set, or no set rest programmed
-                    finishSetOrWorkout();
-                    return;
-                }
-            } else if (state.isSetRest) {
-                // Transition: Set Rest -> Next Set Work
-                state.isSetRest = false;
-                state.currentSet++;
-                state.currentCycle = 1;
-                state.isWork = true;
-                state.timeLeft = settings.workTime;
-                statusLabel.innerText = "WORK";
-                setTheme('work');
-            } else { // In regular cycle rest
-                // Transition: Rest -> Next Cycle Work
-                state.currentCycle++;
-                state.isWork = true;
-                
-                // Check if moving to next set
-                if (state.currentCycle > settings.cyclesPerSet && state.currentSet < settings.totalSets) {
-                    // This scenario should be caught in the 'isWork' block above, but as a safeguard:
-                    finishSetOrWorkout();
-                    return;
-                } else if (state.currentCycle > settings.cyclesPerSet && state.currentSet === settings.totalSets) {
-                    // Last set complete
-                    finishWorkout();
-                    return;
-                }
-                
-                state.timeLeft = settings.workTime;
-                statusLabel.innerText = "WORK";
-                setTheme('work');
-            }
-            
-            updateDisplay();
-        }
-
-        function finishSetOrWorkout() {
-            // Check if we finished the last cycle of a set but still have more sets to go (and skipped set rest because it was 0)
-            if (state.currentCycle >= settings.cyclesPerSet && state.currentSet < settings.totalSets) {
-                 // Move to the next set immediately
-                 state.currentSet++;
-                 state.currentCycle = 1;
-                 state.isWork = true;
-                 state.isSetRest = false;
-                 state.timeLeft = settings.workTime;
-                 statusLabel.innerText = "WORK";
-                 setTheme('work');
-            } else {
-                finishWorkout();
-            }
-        }
-
-
-        function finishWorkout() {
-            stopTimer();
-            statusLabel.innerText = "DONE";
-            timeDisplay.innerText = "0";
-            state.isRunning = false;
-            
-            // Final celebratory beeps
-            setTimeout(() => beep(600, 100), 0);
-            setTimeout(() => beep(800, 100), 150);
-            setTimeout(() => beep(1200, 300), 300);
-            
-            startBtn.innerHTML = `<i data-lucide="rotate-ccw" class="w-6 h-6"></i> <span id="start-text">RESTART</span>`;
-            lucide.createIcons();
-        }
-
-        function updateDisplay() {
-            // Ensure time is non-negative for display
-            const timeToDisplay = Math.max(0, state.timeLeft);
-            // DEBUGGED: Removed padStart(2, '0') to ensure consistent display for 3-digit times.
-            timeDisplay.innerText = timeToDisplay.toString();
-            
-            cycleDisplay.innerText = Math.min(state.currentCycle, settings.cyclesPerSet); // Cap cycle display at total cycles
-            setDisplay.innerText = Math.min(state.currentSet, settings.totalSets); // Cap set display at total sets
-        }
-
-        function setTheme(mode) {
-            container.classList.remove('state-work', 'state-rest', 'state-set-rest');
-            if (mode === 'work') {
-                container.classList.add('state-work');
-            } else if (mode === 'rest') {
-                container.classList.add('state-rest');
-            } else if (mode === 'set-rest') {
-                container.classList.add('state-set-rest');
-            }
-        }
-        
-        // Initial setup
-        window.onload = () => {
-             // Initial load of default settings to ensure the UI is populated correctly
-             loadTimerSettings();
-             resetTimer(); // Ensure it starts in a clean READY state showing settings.
-             showSettings(); // Force settings panel open
-             
-             // Initialize unit displays for calculators
-             toggleBodyfatUnits();
-             toggleMacroUnits();
-        }
+            document.querySelectorAll('.tool-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const data = toolData[btn.getAttribute('data-tool')];
+                    if (data) {
+                        devTitle.textContent = data.title;
+                        devText.textContent = data.text;
+                        devIconWrapper.innerHTML = `<i data-lucide="${data.icon}" class="w-8 h-8" style="color: var(--text-heading)"></i>`;
+                        lucide.createIcons();
+                        openModal(devModal);
+                    }
+                });
+            });
+
+            document.getElementById('close-dev-modal').addEventListener('click', () => closeModal(devModal));
+            document.getElementById('dev-modal-confirm').addEventListener('click', () => closeModal(devModal));
+
+            [infoModal, devModal].forEach(m => m.addEventListener('click', (e) => {
+                if (e.target === m) closeModal(m);
+            }));
+        });
     </script>
 </body>
 </html>
-
